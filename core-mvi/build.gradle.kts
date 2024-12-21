@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "ru.mirea.bookingconferencerooms.coremvi"
 }
+
+dependencies {
+    implementation(project(":core-utils"))
+}

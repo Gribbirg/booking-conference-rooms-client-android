@@ -23,21 +23,42 @@ fun BaseExtension.baseAndroidConfig(project: Project) {
             }
         }
 
+        buildFeatures.apply {
+            buildConfig = true
+        }
+
         buildTypes {
+            getByName("debug") {
+                buildConfigField(
+                    "String",
+                    "HOST_URL",
+                    propertiesSecretes.getProperty("HOST_URL_DEBUG"),
+                )
+            }
             getByName("release") {
-                isMinifyEnabled = true
+                isMinifyEnabled = false
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                    "proguard-rules.pro",
+                )
+                buildConfigField(
+                    "String",
+                    "HOST_URL",
+                    propertiesSecretes.getProperty("HOST_URL_RELEASE"),
                 )
             }
             create("release-signed") {
-                isMinifyEnabled = true
+                isMinifyEnabled = false
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                    "proguard-rules.pro",
                 )
                 signingConfig = signingConfigs.getByName("release-signed")
+                buildConfigField(
+                    "String",
+                    "HOST_URL",
+                    propertiesSecretes.getProperty("HOST_URL_RELEASE"),
+                )
             }
         }
 

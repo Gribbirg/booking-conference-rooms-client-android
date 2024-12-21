@@ -2,22 +2,23 @@ package ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.api
 
 import ru.mirea.bookingconferencerooms.coreapi.ApiResponse
 import ru.mirea.bookingconferencerooms.corebooking.dto.Conference
+import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceInput
 import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoom
-import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoomDetails
-import ru.mirea.bookingconferencerooms.corebooking.dto.ConferencesOfDay
-import java.time.LocalDate
 import java.util.UUID
 
 internal interface BookingFeatureApi {
+
     suspend fun getConferenceRooms(): ApiResponse<List<ConferenceRoom>>
-    suspend fun getConferenceRoomDetails(id: UUID): ApiResponse<ConferenceRoomDetails>
-    suspend fun getConferencesByRoomAndDay(
+
+    suspend fun getConferenceRoom(
         roomId: UUID,
-        day: LocalDate,
-    ): ApiResponse<ConferencesOfDay>
+    ): ApiResponse<ConferenceRoom>
+
+    suspend fun getConferencesByRoom(
+        roomId: UUID,
+    ): ApiResponse<List<Conference>>
+
     suspend fun addConference(
-        roomId: UUID,
-        day: LocalDate,
-        conference: Conference,
-    ): ApiResponse<Boolean>
+        conference: ConferenceInput,
+    ): ApiResponse<Conference>
 }

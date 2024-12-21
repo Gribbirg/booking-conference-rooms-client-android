@@ -1,6 +1,5 @@
 package ru.mirea.bookingconferencerooms.featureauth.impl.internal.data
 
-import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import ru.mirea.bookingconferencerooms.coreapi.BaseApi
@@ -10,7 +9,6 @@ import javax.inject.Inject
 
 @AuthFeatureScope
 internal class UserDataApi @Inject constructor(
-    private val client: HttpClient,
     private val userStore: UserStore,
 ) : BaseApi() {
     override suspend fun getAuthKey(): String? {
@@ -19,7 +17,7 @@ internal class UserDataApi @Inject constructor(
 
     suspend fun getUserData(): User? {
         val jwt = userStore.getJwt()
-        return client.safeRequest<User> {
+        return makeRequest<User> {
             url(URL_AUTH)
             parameter(PARAM_FORMAT, FORMAT_JSON)
             parameter(PARAM_JWT, jwt)

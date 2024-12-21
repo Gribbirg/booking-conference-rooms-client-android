@@ -6,7 +6,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.mirea.bookingconferencerooms.coreapi.ApiResponse
-import ru.mirea.bookingconferencerooms.corebooking.dto.Conference
+import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceInput
 import ru.mirea.bookingconferencerooms.coremvi.BaseMviViewModel
 import ru.mirea.bookingconferencerooms.coreutils.coroutins.collectIn
 import ru.mirea.bookingconferencerooms.featureauth.api.models.AuthFlow
@@ -19,8 +19,7 @@ import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.m
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.models.DetailsUiAction
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.models.DetailsUiEffect
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.models.DetailsUiState
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 
@@ -78,7 +77,7 @@ internal class DetailsViewModel @AssistedInject constructor(
         backgroundScope.launch {
             val roomAsync = async { repository.getRoomDetails(id) }
             val conferencesAsync =
-                async { repository.getConferencesForRoomInDay(id, LocalDate.now()) }
+                async { repository.getConferencesForRoom(id) }
 
             val room = roomAsync.await()
 
@@ -104,7 +103,7 @@ internal class DetailsViewModel @AssistedInject constructor(
                     conferencesOfDayState = conferencesOfDayState.copy(
                         listState = if (conferences is ApiResponse.Success)
                             ConferencesListState.Loaded(
-                                conferences = conferences.body.conferences
+                                conferences = conferences.body,
                             )
                         else
                             ConferencesListState.Error
@@ -147,8 +146,8 @@ internal class DetailsViewModel @AssistedInject constructor(
 
     private fun confirmBooking(
         name: String,
-        from: LocalTime,
-        to: LocalTime,
+        from: OffsetDateTime,
+        to: OffsetDateTime,
     ) {
         lastBooking = BookingDialogState.Opened(name, from, to)
         updateStateIfLoaded { copy(bookingDialogState = BookingDialogState.Loading) }
@@ -160,22 +159,16 @@ internal class DetailsViewModel @AssistedInject constructor(
             }
 
             val isAdded = repository.addConference(
-                roomId = id,
-                day = LocalDate.now(),
-                conference = Conference(
-                    id = UUID.randomUUID(),
+                conference = ConferenceInput(
                     name = name,
                     authorId = userId,
-                    from = from.atDate(LocalDate.now()),
-                    to = to.atDate(LocalDate.now()),
+                    startTime = from,
+                    endTime = to,
+                    roomId = id,
                 )
             ).getOrNull()
-            if (isAdded == null) {
-                updateState { DetailsUiState.Error }
-                return@launch
-            }
 
-            if (isAdded) {
+            if (isAdded != null) {
                 updateStateIfLoaded {
                     copy(
                         bookingDialogState = BookingDialogState.Closed,

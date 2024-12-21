@@ -3,7 +3,7 @@ package ru.mirea.bookingconferencerooms.featurebooking.impl.internal.di.modules
 import dagger.Binds
 import dagger.Module
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.api.BookingFeatureApi
-import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.api.BookingFeatureApiMock
+import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.api.BookingFeatureApiImpl
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.repo.BookingFeatureRepository
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.data.repo.BookingFeatureRepositoryImpl
 
@@ -13,5 +13,5 @@ internal interface DataModule {
     fun bindRepository(impl: BookingFeatureRepositoryImpl): BookingFeatureRepository
 
     @Binds
-    fun bindApi(impl: BookingFeatureApiMock): BookingFeatureApi
+    fun bindApi(impl: BookingFeatureApiImpl): BookingFeatureApi
 }

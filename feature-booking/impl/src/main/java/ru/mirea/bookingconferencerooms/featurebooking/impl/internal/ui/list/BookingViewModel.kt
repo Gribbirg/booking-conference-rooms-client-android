@@ -1,5 +1,6 @@
 package ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.list
 
+import android.util.Log
 import kotlinx.coroutines.launch
 import ru.mirea.bookingconferencerooms.coreapi.ApiResponse
 import ru.mirea.bookingconferencerooms.coremvi.BaseMviViewModel
@@ -39,12 +40,12 @@ internal class BookingViewModel @Inject constructor(
 
     private fun loadRooms() {
         backgroundScope.launch {
-            val response = repo.getRooms()
             val userImageUrl = (authFlow.value as? Auth)?.user?.avatarUrl(AvatarSize.MIDDLE)
             if (userImageUrl == null) {
                 emitEffect(BookingFeatureEffect.ToAuth)
                 return@launch
             }
+            val response = repo.getRooms()
             updateStateByApiResponse(response) { data ->
                 updateState { BookingFeatureState.Loaded(data, userImageUrl) }
             }

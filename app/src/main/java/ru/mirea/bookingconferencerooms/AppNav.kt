@@ -17,9 +17,13 @@ internal fun AppNav(
     NavHost(
         navController = navController,
         startDestination = Destinations.Auth.route,
+        enterTransition = TransitionAnimations.secondScreenEnter(),
+        exitTransition = TransitionAnimations.secondScreenExit(),
     ) {
         composable(
-            Destinations.RoomsList.route
+            Destinations.RoomsList.route,
+            enterTransition = TransitionAnimations.mainScreenEnter(),
+            exitTransition = TransitionAnimations.mainScreenExit(),
         ) {
             appComponent.bookingFeature.ListScreen(
                 onNavAction = navManager::handleBookingFeatureNavigation,

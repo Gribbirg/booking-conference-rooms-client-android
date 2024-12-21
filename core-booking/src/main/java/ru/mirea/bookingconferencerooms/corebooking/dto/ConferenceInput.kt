@@ -7,14 +7,13 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 @Serializable
-data class Conference(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID,
+data class ConferenceInput(
     val name: String,
     val authorId: String,
     @Serializable(with = OffsetDateTimeSerializer::class)
     val startTime: OffsetDateTime,
     @Serializable(with = OffsetDateTimeSerializer::class)
     val endTime: OffsetDateTime,
-    val room: ConferenceRoom,
+    @Serializable(with = UUIDSerializer::class)
+    val roomId: UUID,
 )

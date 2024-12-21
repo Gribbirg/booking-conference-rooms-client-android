@@ -12,21 +12,24 @@ import io.ktor.serialization.ContentConvertException
 import io.ktor.serialization.JsonConvertException
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
+import ru.mirea.bookingconferencerooms.coreutils.logError
 import java.io.IOException
 
 
-abstract class BaseApi {
-
+abstract class BaseApi(
+    val httpClient: HttpClient = getMainHttpClient(),
+) {
     open suspend fun getAuthKey(): String? = null
 
-    protected suspend inline fun <reified T> HttpClient.safeRequest(
+    open suspend fun baseRequest(builder: HttpRequestBuilder): Unit = Unit
+
+    protected suspend inline fun <reified T> makeRequest(
         crossinline block: HttpRequestBuilder.() -> Unit,
-    ): ApiResponse<T> = withContext(coroutineContext) {
+    ): ApiResponse<T> = withContext(httpClient.coroutineContext) {
         val authKey = getAuthKey()
 
         return@withContext try {
-            val response = request {
-                block()
+            val response = httpClient.request {
                 authKey?.let {
                     headers {
                         append(
@@ -35,25 +38,33 @@ abstract class BaseApi {
                         )
                     }
                 }
+                baseRequest(this)
+                block()
             }
             ApiResponse.Success(response.body<T>())
         } catch (serverResponseException: ServerResponseException) {
+            logError(serverResponseException)
             ApiResponse.Error.HttpError(
                 serverResponseException.response.status.value,
                 serverResponseException.response.body()
             )
         } catch (ioException: IOException) {
+            logError(ioException)
             ApiResponse.Error.NetworkError
         } catch (serializationException: SerializationException) {
+            logError(serializationException)
             ApiResponse.Error.SerializationError
         } catch (noTransformationFoundException: NoTransformationFoundException) {
+            logError(noTransformationFoundException)
             ApiResponse.Error.SerializationError
         } catch (jsonConvertException: JsonConvertException) {
+            logError(jsonConvertException)
             ApiResponse.Error.SerializationError
         } catch (contentConvertException: ContentConvertException) {
+            logError(contentConvertException)
             ApiResponse.Error.SerializationError
         } catch (e: Exception) {
-            println(e)
+            logError(e)
             ApiResponse.Error.UnknownError
         }
     }

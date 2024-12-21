@@ -29,7 +29,10 @@ internal class NavManager(
                 navController.navigate(Destinations.Auth.route)
             }
 
-            AuthFeatureNavAction.OpenMain -> navController.navigate(Destinations.RoomsList.route)
+            AuthFeatureNavAction.OpenMain -> {
+                navController.popBackStack()
+                navController.navigate(Destinations.RoomsList.route)
+            }
         }
     }
 }

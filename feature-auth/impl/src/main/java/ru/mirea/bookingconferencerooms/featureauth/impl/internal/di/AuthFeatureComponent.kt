@@ -11,7 +11,6 @@ import ru.mirea.bookingconferencerooms.featureauth.impl.internal.AuthFeatureImpl
     modules = [
         ViewModelModule::class,
         AuthSdkModule::class,
-        ApiModule::class,
     ],
 )
 @AuthFeatureScope

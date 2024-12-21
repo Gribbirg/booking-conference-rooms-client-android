@@ -1,5 +1,6 @@
 package ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.compose
 
+import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,14 +29,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import ru.mirea.bookingconferencerooms.coreui.components.LoadingScreen
 import ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.models.BookingDialogState
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun BookingDialog(
     state: BookingDialogState,
     onDismiss: () -> Unit,
-    onConfirm: (String, LocalTime, LocalTime) -> Unit,
+    onConfirm: (String, OffsetDateTime, OffsetDateTime) -> Unit,
     onRetry: () -> Unit,
 ) {
     if (state is BookingDialogState.Closed) {
@@ -60,14 +64,27 @@ internal fun BookingDialog(
 private fun LoadedState(
     state: BookingDialogState.Opened,
     onDismiss: () -> Unit,
-    onConfirm: (String, LocalTime, LocalTime) -> Unit,
+    onConfirm: (String, OffsetDateTime, OffsetDateTime) -> Unit,
 ) {
     var name by remember { mutableStateOf(state.name) }
-    var startTime by remember { mutableStateOf(state.from) }
-    var endTime by remember { mutableStateOf(state.to) }
+    var startDate by remember { mutableStateOf(state.from.toLocalDate()) }
+    var startTime by remember { mutableStateOf(state.from.toLocalTime()) }
+    var endDate by remember { mutableStateOf(state.to.toLocalDate()) }
+    var endTime by remember { mutableStateOf(state.to.toLocalTime()) }
 
     val context = LocalContext.current
 
+    val startDatePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                startDate = LocalDate.of(year, month, dayOfMonth)
+            },
+            startDate.year,
+            startDate.monthValue - 1,
+            startDate.dayOfMonth,
+        )
+    }
     val startTimePickerDialog = remember {
         TimePickerDialog(
             context,
@@ -80,6 +97,17 @@ private fun LoadedState(
         )
     }
 
+    val endDatePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                endDate = LocalDate.of(year, month, dayOfMonth)
+            },
+            endDate.year,
+            endDate.monthValue - 1,
+            endDate.dayOfMonth,
+        )
+    }
     val endTimePickerDialog = remember {
         TimePickerDialog(
             context,
@@ -106,7 +134,23 @@ private fun LoadedState(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(text = "Дата от: $startDate")
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { startDatePickerDialog.show() }) {
+                Text(text = "Выбрать")
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(text = "Время от: ${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))}")
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { startTimePickerDialog.show() }) {
@@ -114,7 +158,23 @@ private fun LoadedState(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(text = "Дата до: $startDate")
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { endDatePickerDialog.show() }) {
+                Text(text = "Выбрать")
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(text = "Время до: ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}")
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { endTimePickerDialog.show() }) {
@@ -123,8 +183,8 @@ private fun LoadedState(
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
         ) {
             TextButton(onClick = onDismiss) {
                 Text("Отмена")
@@ -132,9 +192,13 @@ private fun LoadedState(
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    onConfirm(name, startTime, endTime)
+                    onConfirm(
+                        name,
+                        startDate.atTime(startTime.atOffset(ZoneOffset.UTC)),
+                        endDate.atTime(endTime.atOffset(ZoneOffset.UTC)),
+                    )
                 },
-                enabled = name.isNotBlank() && startTime.isBefore(endTime)
+                enabled = name.isNotBlank(),
             ) {
                 Text("Подтвердить")
             }

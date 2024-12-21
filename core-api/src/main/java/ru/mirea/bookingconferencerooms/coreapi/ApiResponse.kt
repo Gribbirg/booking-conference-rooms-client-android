@@ -17,4 +17,11 @@ sealed class ApiResponse<out T> {
             else -> null
         }
     }
+
+    fun <F> mapTo(map: T.() -> F): ApiResponse<F> {
+        return when (this) {
+            is Error -> this
+            is Success -> Success(this.body.map())
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package ru.mirea.bookingconferencerooms.coremvi
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,6 +17,7 @@ import kotlinx.coroutines.plus
 import ru.mirea.bookingconferencerooms.coremvi.models.BaseMviViewAction
 import ru.mirea.bookingconferencerooms.coremvi.models.BaseMviViewEffect
 import ru.mirea.bookingconferencerooms.coremvi.models.BaseMviViewState
+import ru.mirea.bookingconferencerooms.coreutils.logError
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseMviViewModel<S : BaseMviViewState, A : BaseMviViewAction, E : BaseMviViewEffect>(
@@ -34,6 +34,7 @@ abstract class BaseMviViewModel<S : BaseMviViewState, A : BaseMviViewAction, E :
 
     protected val scope: CoroutineScope =
         viewModelScope + CoroutineExceptionHandler { coroutineContext, throwable ->
+            logError(throwable)
             onError(
                 coroutineContext,
                 throwable,

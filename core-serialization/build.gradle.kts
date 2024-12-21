@@ -4,11 +4,9 @@ plugins {
 }
 
 android {
-    namespace = "ru.mirea.bookingconferencerooms.coreapi"
+    namespace = "ru.mirea.bookingconferencerooms.coreserialization"
 }
 
 dependencies {
     implementation(project(":core-utils"))
-
-    api(libs.bundles.ktor)
 }

@@ -2,16 +2,17 @@ package ru.mirea.bookingconferencerooms.featurebooking.impl.internal.ui.details.
 
 import androidx.compose.runtime.Immutable
 import ru.mirea.bookingconferencerooms.corebooking.dto.Conference
-import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoomDetails
+import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoom
 import ru.mirea.bookingconferencerooms.coremvi.models.BaseMviViewState
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 internal sealed interface DetailsUiState : BaseMviViewState {
     data object Loading : DetailsUiState
     data object Error : DetailsUiState
     data class Loaded(
-        val room: ConferenceRoomDetails,
+        val room: ConferenceRoom,
         val conferencesOfDayState: ConferencesOfDayState = ConferencesOfDayState(),
         val userImageUrl: String,
         val bookingDialogState: BookingDialogState,
@@ -39,16 +40,18 @@ internal sealed interface BookingDialogState {
     data object Loading : BookingDialogState
     data class Opened(
         val name: String,
-        val from: LocalTime,
-        val to: LocalTime,
+        val from: OffsetDateTime,
+        val to: OffsetDateTime,
     ) : BookingDialogState {
         companion object {
-            val default: Opened get() = Opened(
-                name = "",
-                from = LocalTime.now(),
-                to = LocalTime.now().plusHours(1),
-            )
+            val default: Opened
+                get() = Opened(
+                    name = "",
+                    from = OffsetDateTime.now(ZoneOffset.systemDefault()),
+                    to = OffsetDateTime.now(ZoneOffset.systemDefault()).plusHours(1),
+                )
         }
     }
+
     data object BusyTimeSelected : BookingDialogState
 }

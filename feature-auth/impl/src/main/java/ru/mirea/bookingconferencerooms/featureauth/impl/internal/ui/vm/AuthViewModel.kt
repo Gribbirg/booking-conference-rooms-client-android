@@ -1,9 +1,7 @@
 package ru.mirea.bookingconferencerooms.featureauth.impl.internal.ui.vm
 
-import android.util.Log
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthResult
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import ru.mirea.bookingconferencerooms.coremvi.BaseMviViewModel
 import ru.mirea.bookingconferencerooms.coreutils.coroutins.collectIn
@@ -32,12 +30,6 @@ internal class AuthViewModel @Inject constructor(
     }
 
     override fun onError(coroutineContext: CoroutineContext, throwable: Throwable) {
-        Log.e(
-            AuthViewModel::class.java.simpleName,
-            "onError: ${throwable::class.java.simpleName}\n${throwable.message}\n${
-                throwable.stackTrace.joinToString("\n")
-            }"
-        )
         updateState { AuthViewState.Error }
     }
 

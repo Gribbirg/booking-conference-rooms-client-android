@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.mirea.bookingconferencerooms.corebooking.dto.Conference
-import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoomDetails
+import ru.mirea.bookingconferencerooms.corebooking.dto.ConferenceRoom
 import ru.mirea.bookingconferencerooms.coreui.components.ErrorScreen
 import ru.mirea.bookingconferencerooms.coreui.components.LoadingScreen
 import ru.mirea.bookingconferencerooms.featurebooking.impl.R
@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun RoomDetailsComponent(
-    roomDetails: ConferenceRoomDetails,
+    roomDetails: ConferenceRoom,
     conferencesOfDayState: ConferencesOfDayState,
     bookRoom: () -> Unit,
     modifier: Modifier = Modifier,
@@ -77,13 +77,6 @@ internal fun RoomDetailsComponent(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Text(
-                    text = "Author: ${roomDetails.author}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
                 Button(
                     onClick = bookRoom,
                     shape = RoundedCornerShape(8.dp),
@@ -101,9 +94,11 @@ internal fun RoomDetailsComponent(
                     modifier = Modifier.fillMaxSize()
                 )
             }
+
             is ConferencesListState.Loaded -> items(conferencesOfDayState.listState.conferences) {
                 ConferenceRoomDetailsCard(it)
             }
+
             ConferencesListState.Loading -> item {
                 LoadingScreen(modifier = Modifier.fillMaxSize())
             }
@@ -131,12 +126,12 @@ private fun ConferenceRoomDetailsCard(conference: Conference) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "С: ${conference.from.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                text = "С: ${conference.startTime.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))}",
                 style = MaterialTheme.typography.bodySmall
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "До: ${conference.to.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                text = "До: ${conference.endTime.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))}",
                 style = MaterialTheme.typography.bodySmall
             )
         }

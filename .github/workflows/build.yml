@@ -20,6 +20,8 @@ env:
   KEY_STORE_CONTENT: ${{ secrets.KEY_STORE_CONTENT }}
   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
   KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  HOST_DEBUG: ${{ secrets.HOST_DEBUG }}
+  HOST_RELEASE: ${{ secrets.HOST_RELEASE }}
 
 jobs:
   build-and-telegram-report:
@@ -37,7 +39,7 @@ jobs:
         shell: bash
         run: chmod +x gradlew
       - name: Setup secrets
-        run: echo -e "YANDEX_CLIENT_ID=${YANDEX_CLIENT_ID}\nTELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}\nTELEGRAM_BOT_API=${TELEGRAM_BOT_API}\nKEY_STORE_PASSWORD=${KEY_STORE_PASSWORD}\nKEY_PASSWORD=${KEY_PASSWORD}\nKEY_ALIAS=${KEY_ALIAS}\nKEY_STORE_PATH=${KEY_STORE_PATH}" > secrets.properties
+        run: echo -e "YANDEX_CLIENT_ID=${YANDEX_CLIENT_ID}\nTELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}\nTELEGRAM_BOT_API=${TELEGRAM_BOT_API}\nKEY_STORE_PASSWORD=${KEY_STORE_PASSWORD}\nKEY_PASSWORD=${KEY_PASSWORD}\nKEY_ALIAS=${KEY_ALIAS}\nKEY_STORE_PATH=${KEY_STORE_PATH}\nHOST_URL_DEBUG=${HOST_DEBUG}\nHOST_URL_RELEASE=${HOST_RELEASE}" > secrets.properties
       - name: Setup keystore
         env:
           ENCODED_KEYSTORE: ${{ secrets.KEY_STORE_CONTENT }}
