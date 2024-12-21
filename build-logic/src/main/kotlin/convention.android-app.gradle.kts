@@ -29,12 +29,6 @@ configure<BaseAppModuleExtension> {
         manifestPlaceholders["YANDEX_CLIENT_ID"] = properties.getProperty("YANDEX_CLIENT_ID")
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
-
     applicationVariants.all {
         outputs.all {
             val variantOutputImpl =
