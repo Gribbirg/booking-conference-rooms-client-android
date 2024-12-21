@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth">Войти</string>
+    <string name="profile">Профиль</string>
+    <string name="auth_to_use_app">Войдите в аккаунт, чтобы пользоваться приложением!</string>
+    <string name="auth_button_text">Войти с Яндекс ID</string>
+    <string name="logout">Выйти</string>
+</resources>

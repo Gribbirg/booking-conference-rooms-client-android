@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error">Ошибка</string>
+    <string name="list_top_app_bar_content">Список конференц залов</string>
+    <string name="book">Забронировать</string>
+</resources>
