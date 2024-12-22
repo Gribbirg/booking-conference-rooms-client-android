@@ -23,4 +23,5 @@ dependencies {
     implementation(project(":feature-booking:impl"))
     implementation(project(":feature-auth:impl"))
     implementation(project(":core-ui"))
+    implementation(libs.material)
 }

@@ -21,6 +21,7 @@ yandexAuth = "3.1.3"
 datastore = "1.1.1"
 serialization = "1.7.3"
 coil = "3.0.4"
+material = "1.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -71,6 +72,7 @@ kotlinx-serialization-runtime = { module = "org.jetbrains.kotlinx:kotlinx-serial
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
 ktor = ["ktor-client", "ktor-client-android", "ktor-client-auth", "ktor-client-content-negotiation", "ktor-client-logging-jvm", "ktor-client-okhttp", "ktor-client-serialization", "ktor-client-websockets", "ktor-serialization-kotlinx-json"]
