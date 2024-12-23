@@ -67,6 +67,9 @@ private fun AuthScreenStates(
             is AuthViewState.Loaded -> AuthScreenContent(
                 state = state,
                 onAction = onAction,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
             )
         }
     }
